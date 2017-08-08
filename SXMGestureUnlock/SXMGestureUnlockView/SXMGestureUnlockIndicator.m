@@ -74,7 +74,9 @@
 
 - (void)setGesturesPassword:(NSString *)gesturesPassword {
     if (gesturesPassword.length == 0) {
-        [self.btns makeObjectsPerformSelector:@selector(setSelected:) withObject:@(NO)];
+        for (UIButton *btn in self.btns) {
+            btn.selected = NO;
+        }
         return;
     }
     

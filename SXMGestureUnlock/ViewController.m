@@ -13,6 +13,7 @@
 @interface ViewController () <SXMGestureUnlockViewDelegate>
 @property (nonatomic, strong) SXMGestureUnlockIndicator *indicator;
 @property (weak, nonatomic) IBOutlet SXMGestureUnlockView *lockView;
+@property (weak, nonatomic) IBOutlet UILabel *tipLabel;
 
 @end
 
@@ -28,16 +29,27 @@
     
     
     self.lockView.delegate = self;
-//    self.lockView.lineWidth = 2;
-    self.lockView.linColor = [UIColor orangeColor];
+    self.lockView.lineWidth = 3;
+    self.lockView.lineColor = [UIColor blueColor];
     
-    _indicator = [[SXMGestureUnlockIndicator alloc] initWithFrame:CGRectMake(100, 40, 80, 80)];
+    _indicator = [[SXMGestureUnlockIndicator alloc] initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width - 80) / 2, 80, 80, 80)];
     [self.view addSubview:_indicator];
 }
 
 - (void)gestureUnlockView:(SXMGestureUnlockView *)gestureUnlockView gesturePassword:(NSString *)gesturePassword
 {
     NSLog(@"gesturePassword:%@", gesturePassword);
+    
+    if ([gesturePassword isEqualToString:@"01258"]) {
+        [self.lockView gesturePasswordCorrect];
+        self.tipLabel.text = @"手势密码正确";
+        self.tipLabel.textColor = [UIColor blackColor];
+    } else {
+        [self.lockView gesturePasswordIncorrect];
+        self.tipLabel.text = @"手势密码错误";
+        self.tipLabel.textColor = [UIColor redColor];
+    }
+    [_indicator setGesturesPassword:@""];
     [_indicator setGesturesPassword:gesturePassword];
 }
 

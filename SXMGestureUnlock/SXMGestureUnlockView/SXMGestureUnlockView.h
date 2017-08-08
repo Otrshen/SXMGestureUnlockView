@@ -20,7 +20,20 @@
 
 @property (nonatomic, weak) id<SXMGestureUnlockViewDelegate> delegate;
 
+/** 线条宽度 */
 @property (nonatomic, assign) CGFloat lineWidth;
-@property (nonatomic, strong) UIColor *linColor;
+/** 线条颜色 */
+@property (nonatomic, strong) UIColor *lineColor;
+
+
+/**
+ 手势密码正确
+ */
+- (void)gesturePasswordCorrect;
+
+/**
+ 手势密码不正确
+ */
+- (void)gesturePasswordIncorrect;
 
 @end

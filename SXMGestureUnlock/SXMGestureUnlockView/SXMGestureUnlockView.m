@@ -37,7 +37,7 @@
 - (void)setupUI
 {
     self.lineWidth = 8; // 线条默认宽度
-    self.linColor = [UIColor blueColor]; // 线条默认颜色
+    self.lineColor = [UIColor blueColor]; // 线条默认颜色
     self.opaque = NO; // 默认不透明
     
     // 添加手势
@@ -96,11 +96,7 @@
         NSMutableString *pwd = [NSMutableString string];
         for (UIButton *btn in self.selectedBtns) {
             [pwd appendFormat:@"%ld", btn.tag];
-            btn.selected = NO;
         }
-        
-        [self.selectedBtns removeAllObjects];
-        self.currentPoint = CGPointZero;
         
         // 返回结果
         if ([_delegate respondsToSelector:@selector(gestureUnlockView:gesturePassword:)]) {
@@ -132,11 +128,40 @@
     
     CGContextAddLineToPoint(ctx, self.currentPoint.x, self.currentPoint.y);
     
-    [self.linColor set];
+    [self.lineColor set];
     CGContextSetLineWidth(ctx, self.lineWidth);
     CGContextSetLineJoin(ctx, kCGLineJoinRound);
     CGContextSetLineCap(ctx, kCGLineCapRound);
     CGContextStrokePath(ctx);
+}
+
+- (void)gesturePasswordCorrect
+{
+    for (UIButton *btn in self.selectedBtns) {
+        btn.selected = NO;
+    }
+    
+    [self.selectedBtns removeAllObjects];
+    self.currentPoint = CGPointZero;
+    [self setNeedsDisplay];
+}
+
+- (void)gesturePasswordIncorrect
+{
+    for (UIButton *btn in self.selectedBtns) {
+        [btn setBackgroundImage:[UIImage imageNamed:@"gesture_error"] forState:UIControlStateSelected];
+    }
+    
+    self.lineColor = [UIColor redColor];
+    [self setNeedsDisplay];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.8 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        for (UIButton *btn in self.selectedBtns) {
+            [btn setBackgroundImage:[UIImage imageNamed:@"gesture_selected"] forState:UIControlStateSelected];
+        }
+        self.lineColor = [UIColor blueColor];
+        [self gesturePasswordCorrect];
+    });
 }
 
 - (NSMutableArray *)selectedBtns
